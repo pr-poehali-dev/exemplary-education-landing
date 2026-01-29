@@ -4,6 +4,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime
+import psycopg2
 
 def handler(event: dict, context) -> dict:
     """Регистрация на форум и отправка билета на email"""
@@ -48,6 +49,19 @@ def handler(event: dict, context) -> dict:
                 },
                 'body': json.dumps({'error': 'Заполните все обязательные поля'})
             }
+        
+        db_url = os.environ.get('DATABASE_URL')
+        schema = os.environ.get('MAIN_DB_SCHEMA', 'public')
+        
+        conn = psycopg2.connect(db_url)
+        cur = conn.cursor()
+        cur.execute(
+            f'INSERT INTO {schema}.registrations (name, email, age, tickets) VALUES (%s, %s, %s, %s)',
+            (name, email, age, tickets_count)
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
         
         smtp_host = os.environ.get('SMTP_HOST')
         smtp_port = int(os.environ.get('SMTP_PORT', 587))

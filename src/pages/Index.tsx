@@ -7,11 +7,69 @@ import { useToast } from "@/hooks/use-toast";
 import Icon from "@/components/ui/icon";
 import { useState, useEffect } from "react";
 
+interface HeroContent {
+  title: string;
+  subtitle: string;
+  date: string;
+  location: string;
+}
+
+interface AboutContent {
+  title: string;
+  paragraphs: string[];
+}
+
+interface StatItem {
+  value: string;
+  label: string;
+}
+
+interface ProgramItem {
+  time: string;
+  title: string;
+  description: string;
+  speaker: string;
+}
+
+interface SpeakerItem {
+  name: string;
+  position: string;
+  bio: string;
+}
+
+interface RegistrationContent {
+  title: string;
+  price: string;
+  subtitle: string;
+  benefits: string[];
+}
+
+interface ContactsContent {
+  title: string;
+  email: string;
+  phone: string;
+  address: string;
+  social: {
+    vk: string;
+    telegram: string;
+  };
+}
+
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [heroContent, setHeroContent] = useState({ title: 'Образцовое образование', subtitle: 'Всероссийский форум о будущем обучения', date: '15–16 марта 2026', location: 'МВЦ «Крокус Экспо», Москва' });
-  const [aboutContent, setAboutContent] = useState({ title: 'О форуме', paragraphs: [''] });
+  const [heroContent, setHeroContent] = useState<HeroContent>({ 
+    title: 'Образцовое образование', 
+    subtitle: 'Всероссийский форум о будущем обучения', 
+    date: '15–16 марта 2026', 
+    location: 'МВЦ «Крокус Экспо», Москва' 
+  });
+  const [aboutContent, setAboutContent] = useState<AboutContent>({ title: 'О форуме', paragraphs: [''] });
+  const [statsContent, setStatsContent] = useState<StatItem[]>([]);
+  const [programContent, setProgramContent] = useState<{ title: string; items: ProgramItem[] }>({ title: 'Программа', items: [] });
+  const [speakersContent, setSpeakersContent] = useState<{ title: string; items: SpeakerItem[] }>({ title: 'Наши спикеры', items: [] });
+  const [registrationContent, setRegistrationContent] = useState<RegistrationContent>({ title: 'Регистрация', price: 'Бесплатно', subtitle: 'Участие в форуме', benefits: [] });
+  const [contactsContent, setContactsContent] = useState<ContactsContent>({ title: 'Контакты', email: '', phone: '', address: '', social: { vk: '#', telegram: '#' } });
   const { toast } = useToast();
   
   const ADMIN_API = 'https://functions.poehali.dev/9415fc7f-1b50-4b21-b974-8752b2e70d6e';
@@ -24,12 +82,13 @@ const Index = () => {
     try {
       const response = await fetch(`${ADMIN_API}?action=content`);
       const data = await response.json();
-      if (data.content?.hero) {
-        setHeroContent(data.content.hero);
-      }
-      if (data.content?.about) {
-        setAboutContent(data.content.about);
-      }
+      if (data.content?.hero) setHeroContent(data.content.hero);
+      if (data.content?.about) setAboutContent(data.content.about);
+      if (data.content?.stats) setStatsContent(data.content.stats.items || []);
+      if (data.content?.program) setProgramContent(data.content.program);
+      if (data.content?.speakers) setSpeakersContent(data.content.speakers);
+      if (data.content?.registration) setRegistrationContent(data.content.registration);
+      if (data.content?.contacts) setContactsContent(data.content.contacts);
     } catch (error) {
       console.error('Ошибка загрузки контента:', error);
     }
@@ -92,7 +151,7 @@ const Index = () => {
       <nav className="fixed top-0 w-full bg-white z-50 border-b border-border/50">
         <div className="container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-medium text-foreground">Образцовое образование</h2>
+            <h2 className="text-base font-medium text-foreground">{heroContent.title}</h2>
             <div className="hidden md:flex gap-8">
               <button onClick={() => scrollToSection('about')} className="text-sm font-light hover:text-foreground transition-colors text-muted-foreground">О форуме</button>
               <button onClick={() => scrollToSection('program')} className="text-sm font-light hover:text-foreground transition-colors text-muted-foreground">Программа</button>
@@ -135,22 +194,24 @@ const Index = () => {
                 </DialogHeader>
                 <form onSubmit={handleRegistration} className="space-y-6 mt-4">
                   <div>
-                    <label htmlFor="ticket-name" className="text-sm font-light mb-2 block text-muted-foreground">Имя и фамилия</label>
-                    <Input id="ticket-name" placeholder="Иван Иванов" className="rounded-none" required />
+                    <label htmlFor="reg-name" className="text-sm font-light mb-2 block text-muted-foreground">Имя</label>
+                    <Input id="reg-name" name="name" placeholder="Иван Иванов" className="rounded-none" required />
                   </div>
                   <div>
-                    <label htmlFor="ticket-email" className="text-sm font-light mb-2 block text-muted-foreground">Email</label>
-                    <Input id="ticket-email" type="email" placeholder="ivan@example.com" className="rounded-none" required />
+                    <label htmlFor="reg-email" className="text-sm font-light mb-2 block text-muted-foreground">Почта (email)</label>
+                    <Input id="reg-email" name="email" type="email" placeholder="ivan@example.com" className="rounded-none" required />
                   </div>
                   <div>
-                    <label htmlFor="ticket-org" className="text-sm font-light mb-2 block text-muted-foreground">Организация</label>
-                    <Input id="ticket-org" placeholder="Название вашей организации" className="rounded-none" />
+                    <label htmlFor="reg-age" className="text-sm font-light mb-2 block text-muted-foreground">Возраст</label>
+                    <Input id="reg-age" name="age" type="number" min="1" max="120" placeholder="25" className="rounded-none" required />
                   </div>
                   <div>
-                    <label htmlFor="ticket-position" className="text-sm font-light mb-2 block text-muted-foreground">Должность</label>
-                    <Input id="ticket-position" placeholder="Ваша должность" className="rounded-none" />
+                    <label htmlFor="reg-tickets" className="text-sm font-light mb-2 block text-muted-foreground">Количество билетов</label>
+                    <Input id="reg-tickets" name="tickets" type="number" min="1" max="10" placeholder="1" defaultValue="1" className="rounded-none" required />
                   </div>
-                  <Button type="submit" className="w-full rounded-none h-12 font-light">Зарегистрироваться</Button>
+                  <Button type="submit" className="w-full rounded-none h-12 font-light" disabled={isLoading}>
+                    {isLoading ? 'Отправка...' : 'Зарегистрироваться'}
+                  </Button>
                 </form>
               </DialogContent>
             </Dialog>
@@ -173,197 +234,79 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-16 max-w-5xl mx-auto">
-            <div className="text-center">
-              <h3 className="text-5xl font-light mb-3 text-foreground">20+</h3>
-              <p className="text-sm font-light text-muted-foreground">ведущих экспертов</p>
-            </div>
-
-            <div className="text-center">
-              <h3 className="text-5xl font-light mb-3 text-foreground">300+</h3>
-              <p className="text-sm font-light text-muted-foreground">участников</p>
-            </div>
-
-            <div className="text-center">
-              <h3 className="text-5xl font-light mb-3 text-foreground">15+</h3>
-              <p className="text-sm font-light text-muted-foreground">практических секций</p>
-            </div>
-
-            <div className="text-center">
-              <h3 className="text-5xl font-light mb-3 text-foreground">100%</h3>
-              <p className="text-sm font-light text-muted-foreground">актуальных трендов</p>
-            </div>
+            {statsContent.map((stat, idx) => (
+              <div key={idx} className="text-center">
+                <h3 className="text-5xl font-light mb-3 text-foreground">{stat.value}</h3>
+                <p className="text-sm font-light text-muted-foreground">{stat.label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       <section id="program" className="py-32 md:py-40 bg-secondary/20">
         <div className="container mx-auto px-6">
-          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">Программа</h2>
+          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">{programContent.title}</h2>
           
           <div className="max-w-4xl mx-auto space-y-12">
-            <div className="border-t border-border pt-8">
-              <div className="flex flex-col md:flex-row md:items-start gap-6">
-                <div className="md:w-24 flex-shrink-0">
-                  <span className="text-sm font-light text-muted-foreground">10:00</span>
-                </div>
-                <div className="flex-grow">
-                  <h3 className="text-xl font-light mb-3">Открытие форума и пленарная сессия</h3>
-                  <p className="text-muted-foreground font-light mb-4 leading-relaxed">
-                    Образование 2026: вызовы, возможности и стратегии развития. Обсуждение ключевых трендов с ведущими экспертами отрасли.
-                  </p>
-                  <p className="text-sm font-light text-foreground">Министр образования РФ, ректоры ведущих вузов</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-t border-border pt-8">
-              <div className="flex flex-col md:flex-row md:items-start gap-6">
-                <div className="md:w-24 flex-shrink-0">
-                  <span className="text-sm font-light text-muted-foreground">12:00</span>
-                </div>
-                <div className="flex-grow">
-                  <h3 className="text-xl font-light mb-3">EdTech: технологии будущего уже сегодня</h3>
-                  <p className="text-muted-foreground font-light mb-4 leading-relaxed">
-                    Практические кейсы внедрения ИИ, адаптивного обучения и VR/AR в образовательный процесс. Демонстрация работающих решений.
-                  </p>
-                  <p className="text-sm font-light text-foreground">Иван Петров, CEO EdTech Platform</p>
+            {programContent.items.map((item, idx) => (
+              <div key={idx} className="border-t border-border pt-8">
+                <div className="flex flex-col md:flex-row md:items-start gap-6">
+                  <div className="md:w-24 flex-shrink-0">
+                    <span className="text-sm font-light text-muted-foreground">{item.time}</span>
+                  </div>
+                  <div className="flex-grow">
+                    <h3 className="text-xl font-light mb-3">{item.title}</h3>
+                    <p className="text-muted-foreground font-light mb-4 leading-relaxed">
+                      {item.description}
+                    </p>
+                    <p className="text-sm font-light text-foreground">{item.speaker}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div className="border-t border-border pt-8">
-              <div className="flex flex-col md:flex-row md:items-start gap-6">
-                <div className="md:w-24 flex-shrink-0">
-                  <span className="text-sm font-light text-muted-foreground">14:30</span>
-                </div>
-                <div className="flex-grow">
-                  <h3 className="text-xl font-light mb-3">Методология современного образования</h3>
-                  <p className="text-muted-foreground font-light mb-4 leading-relaxed">
-                    Как создавать образовательные программы, которые готовят к реальным вызовам. Практики ведущих школ и университетов.
-                  </p>
-                  <p className="text-sm font-light text-foreground">Елена Смирнова, эксперт по методологии</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-t border-border pt-8">
-              <div className="flex flex-col md:flex-row md:items-start gap-6">
-                <div className="md:w-24 flex-shrink-0">
-                  <span className="text-sm font-light text-muted-foreground">16:00</span>
-                </div>
-                <div className="flex-grow">
-                  <h3 className="text-xl font-light mb-3">Нетворкинг и практические мастер-классы</h3>
-                  <p className="text-muted-foreground font-light mb-4 leading-relaxed">
-                    Живое общение с коллегами, обмен опытом и практические сессии по внедрению новых подходов в вашей организации.
-                  </p>
-                  <p className="text-sm font-light text-foreground">Модераторы площадок</p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       <section id="speakers" className="py-32 md:py-40">
         <div className="container mx-auto px-6">
-          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">Наши спикеры</h2>
+          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">{speakersContent.title}</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
-            <div className="border-t border-border pt-6">
-              <div className="mb-6">
-                <h3 className="text-xl font-light mb-1">Алексей Иванов</h3>
-                <p className="text-sm font-light text-muted-foreground">Министр образования РФ</p>
+            {speakersContent.items.map((speaker, idx) => (
+              <div key={idx} className="border-t border-border pt-6">
+                <div className="mb-6">
+                  <h3 className="text-xl font-light mb-1">{speaker.name}</h3>
+                  <p className="text-sm font-light text-muted-foreground">{speaker.position}</p>
+                </div>
+                <p className="text-sm font-light leading-relaxed text-muted-foreground">
+                  {speaker.bio}
+                </p>
               </div>
-              <p className="text-sm font-light leading-relaxed text-muted-foreground">
-                Более 20 лет в образовательной сфере. Автор реформ современной школьной системы, эксперт в области государственной политики в образовании.
-              </p>
-            </div>
-
-            <div className="border-t border-border pt-6">
-              <div className="mb-6">
-                <h3 className="text-xl font-light mb-1">Елена Смирнова</h3>
-                <p className="text-sm font-light text-muted-foreground">Эксперт по методологии, PhD</p>
-              </div>
-              <p className="text-sm font-light leading-relaxed text-muted-foreground">
-                Руководитель центра инновационных методик. Разработчик программ для ведущих университетов России. Международный консультант UNESCO.
-              </p>
-            </div>
-
-            <div className="border-t border-border pt-6">
-              <div className="mb-6">
-                <h3 className="text-xl font-light mb-1">Иван Петров</h3>
-                <p className="text-sm font-light text-muted-foreground">CEO EdTech Platform</p>
-              </div>
-              <p className="text-sm font-light leading-relaxed text-muted-foreground">
-                Основатель крупнейшей российской EdTech-платформы с 5 млн пользователей. Эксперт по цифровой трансформации образования и ИИ в обучении.
-              </p>
-            </div>
-
-            <div className="border-t border-border pt-6">
-              <div className="mb-6">
-                <h3 className="text-xl font-light mb-1">Мария Козлова</h3>
-                <p className="text-sm font-light text-muted-foreground">Ректор Московского педагогического университета</p>
-              </div>
-              <p className="text-sm font-light leading-relaxed text-muted-foreground">
-                Трансформация высшего педагогического образования. Лауреат премии «Учитель года России». Автор 50+ научных публикаций.
-              </p>
-            </div>
-
-            <div className="border-t border-border pt-6">
-              <div className="mb-6">
-                <h3 className="text-xl font-light mb-1">Дмитрий Соколов</h3>
-                <p className="text-sm font-light text-muted-foreground">Директор по инновациям в образовании</p>
-              </div>
-              <p className="text-sm font-light leading-relaxed text-muted-foreground">
-                15 лет опыта внедрения инноваций в крупнейших школах страны. Создатель методики проектного обучения, применяемой в 200+ учебных заведениях.
-              </p>
-            </div>
-
-            <div className="border-t border-border pt-6">
-              <div className="mb-6">
-                <h3 className="text-xl font-light mb-1">Анна Волкова</h3>
-                <p className="text-sm font-light text-muted-foreground">Психолог-методист, автор бестселлеров</p>
-              </div>
-              <p className="text-sm font-light leading-relaxed text-muted-foreground">
-                Специалист по развитию эмоционального интеллекта и soft skills. Автор 3 книг по современной педагогике с тиражом более 100 000 экземпляров.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       <section id="registration" className="py-32 md:py-40 bg-secondary/20">
         <div className="container mx-auto px-6">
-          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">Регистрация</h2>
+          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">{registrationContent.title}</h2>
           
           <div className="max-w-2xl mx-auto">
             <div className="bg-white p-12 border border-border">
               <div className="text-center mb-12">
-                <div className="text-6xl font-light mb-4">Бесплатно</div>
-                <p className="text-lg font-light text-muted-foreground">Участие в форуме</p>
+                <div className="text-6xl font-light mb-4">{registrationContent.price}</div>
+                <p className="text-lg font-light text-muted-foreground">{registrationContent.subtitle}</p>
               </div>
               
               <ul className="space-y-4 mb-12">
-                <li className="text-base font-light flex items-start gap-3">
-                  <span className="text-foreground mt-1">—</span>
-                  <span>Доступ ко всем секциям форума</span>
-                </li>
-                <li className="text-base font-light flex items-start gap-3">
-                  <span className="text-foreground mt-1">—</span>
-                  <span>Материалы выступлений</span>
-                </li>
-                <li className="text-base font-light flex items-start gap-3">
-                  <span className="text-foreground mt-1">—</span>
-                  <span>Кофе-брейки и обеды</span>
-                </li>
-                <li className="text-base font-light flex items-start gap-3">
-                  <span className="text-foreground mt-1">—</span>
-                  <span>Сертификат участника</span>
-                </li>
-                <li className="text-base font-light flex items-start gap-3">
-                  <span className="text-foreground mt-1">—</span>
-                  <span>Нетворкинг с коллегами</span>
-                </li>
+                {registrationContent.benefits.map((benefit, idx) => (
+                  <li key={idx} className="text-base font-light flex items-start gap-3">
+                    <span className="text-foreground mt-1">—</span>
+                    <span>{benefit}</span>
+                  </li>
+                ))}
               </ul>
               
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -379,20 +322,20 @@ const Index = () => {
                   </DialogHeader>
                   <form onSubmit={handleRegistration} className="space-y-6 mt-4">
                     <div>
-                      <label htmlFor="reg-name" className="text-sm font-light mb-2 block text-muted-foreground">Имя</label>
-                      <Input id="reg-name" name="name" placeholder="Иван Иванов" className="rounded-none" required />
+                      <label htmlFor="reg-name-2" className="text-sm font-light mb-2 block text-muted-foreground">Имя</label>
+                      <Input id="reg-name-2" name="name" placeholder="Иван Иванов" className="rounded-none" required />
                     </div>
                     <div>
-                      <label htmlFor="reg-email" className="text-sm font-light mb-2 block text-muted-foreground">Почта (email)</label>
-                      <Input id="reg-email" name="email" type="email" placeholder="ivan@example.com" className="rounded-none" required />
+                      <label htmlFor="reg-email-2" className="text-sm font-light mb-2 block text-muted-foreground">Почта (email)</label>
+                      <Input id="reg-email-2" name="email" type="email" placeholder="ivan@example.com" className="rounded-none" required />
                     </div>
                     <div>
-                      <label htmlFor="reg-age" className="text-sm font-light mb-2 block text-muted-foreground">Возраст</label>
-                      <Input id="reg-age" name="age" type="number" min="1" max="120" placeholder="25" className="rounded-none" required />
+                      <label htmlFor="reg-age-2" className="text-sm font-light mb-2 block text-muted-foreground">Возраст</label>
+                      <Input id="reg-age-2" name="age" type="number" min="1" max="120" placeholder="25" className="rounded-none" required />
                     </div>
                     <div>
-                      <label htmlFor="reg-tickets" className="text-sm font-light mb-2 block text-muted-foreground">Количество билетов</label>
-                      <Input id="reg-tickets" name="tickets" type="number" min="1" max="10" placeholder="1" defaultValue="1" className="rounded-none" required />
+                      <label htmlFor="reg-tickets-2" className="text-sm font-light mb-2 block text-muted-foreground">Количество билетов</label>
+                      <Input id="reg-tickets-2" name="tickets" type="number" min="1" max="10" placeholder="1" defaultValue="1" className="rounded-none" required />
                     </div>
                     <Button type="submit" className="w-full rounded-none h-12 font-light" disabled={isLoading}>
                       {isLoading ? 'Отправка...' : 'Зарегистрироваться'}
@@ -407,30 +350,30 @@ const Index = () => {
 
       <section id="contacts" className="py-32 md:py-40">
         <div className="container mx-auto px-6">
-          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">Контакты</h2>
+          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">{contactsContent.title}</h2>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-4xl mx-auto">
             <div className="space-y-8">
               <div className="border-t border-border pt-6">
                 <p className="text-sm font-light text-muted-foreground mb-2">Email</p>
-                <a href="mailto:info@obraztsovoe.ru" className="text-lg font-light hover:opacity-70 transition-opacity">info@obraztsovoe.ru</a>
+                <a href={`mailto:${contactsContent.email}`} className="text-lg font-light hover:opacity-70 transition-opacity">{contactsContent.email}</a>
               </div>
 
               <div className="border-t border-border pt-6">
                 <p className="text-sm font-light text-muted-foreground mb-2">Телефон</p>
-                <a href="tel:+74951234567" className="text-lg font-light hover:opacity-70 transition-opacity">+7 (495) 123-45-67</a>
+                <a href={`tel:${contactsContent.phone}`} className="text-lg font-light hover:opacity-70 transition-opacity">{contactsContent.phone}</a>
               </div>
 
               <div className="border-t border-border pt-6">
                 <p className="text-sm font-light text-muted-foreground mb-2">Адрес</p>
-                <p className="text-lg font-light">МВЦ «Крокус Экспо», 65-66 км МКАД, Москва</p>
+                <p className="text-lg font-light">{contactsContent.address}</p>
               </div>
 
               <div className="border-t border-border pt-6">
                 <p className="text-sm font-light text-muted-foreground mb-4">Мы в соцсетях</p>
                 <div className="flex gap-4">
-                  <a href="#" className="text-sm font-light hover:opacity-70 transition-opacity">ВКонтакте</a>
-                  <a href="#" className="text-sm font-light hover:opacity-70 transition-opacity">Telegram</a>
+                  <a href={contactsContent.social.vk} className="text-sm font-light hover:opacity-70 transition-opacity">ВКонтакте</a>
+                  <a href={contactsContent.social.telegram} className="text-sm font-light hover:opacity-70 transition-opacity">Telegram</a>
                 </div>
               </div>
             </div>
@@ -459,7 +402,7 @@ const Index = () => {
 
       <footer className="bg-foreground text-background py-12">
         <div className="container mx-auto px-6 text-center">
-          <p className="text-sm font-light">© 2026 Образцовое образование. Всероссийский форум о будущем обучения.</p>
+          <p className="text-sm font-light">© 2026 {heroContent.title}. Всероссийский форум о будущем обучения.</p>
         </div>
       </footer>
     </div>

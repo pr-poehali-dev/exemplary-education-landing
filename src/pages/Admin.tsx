@@ -153,7 +153,7 @@ const Admin = () => {
           <Button
             variant={activeTab === 'registrations' ? 'default' : 'outline'}
             onClick={() => setActiveTab('registrations')}
-            className="rounded-none font-light"
+            className="font-light"
           >
             <Icon name="Users" size={16} className="mr-2" />
             Заявки
@@ -161,7 +161,7 @@ const Admin = () => {
           <Button
             variant={activeTab === 'content' ? 'default' : 'outline'}
             onClick={() => setActiveTab('content')}
-            className="rounded-none font-light"
+            className="font-light"
           >
             <Icon name="FileText" size={16} className="mr-2" />
             Контент
@@ -169,7 +169,7 @@ const Admin = () => {
         </div>
 
         {activeTab === 'registrations' && (
-          <Card className="rounded-none">
+          <Card>
             <CardHeader>
               <CardTitle className="font-light">Регистрации на форум</CardTitle>
               <CardDescription className="font-light">
@@ -225,7 +225,7 @@ const Admin = () => {
                   <div className="text-center py-8 text-muted-foreground font-light">Нет контента</div>
                 ) : (
                   Object.entries(content).map(([section, data]) => (
-                    <Card key={section} className="rounded-none">
+                    <Card key={section}>
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <CardTitle className="font-light capitalize">{section}</CardTitle>
@@ -233,7 +233,7 @@ const Admin = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => handleEditContent(section)}
-                            className="rounded-none font-light"
+                            className="font-light"
                           >
                             <Icon name="Pencil" size={14} className="mr-2" />
                             Редактировать

@@ -181,11 +181,11 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="lg" className="bg-white text-foreground hover:bg-white/90 text-base font-light px-10 h-12 rounded-none">
+                <Button size="lg" className="bg-white text-foreground hover:bg-white/90 text-base font-light px-10 h-12">
                   Получить билет
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md rounded-none">
+              <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                   <DialogTitle className="text-2xl font-light">Регистрация на форум</DialogTitle>
                   <DialogDescription className="font-light">
@@ -195,27 +195,27 @@ const Index = () => {
                 <form onSubmit={handleRegistration} className="space-y-6 mt-4">
                   <div>
                     <label htmlFor="reg-name" className="text-sm font-light mb-2 block text-muted-foreground">Имя</label>
-                    <Input id="reg-name" name="name" placeholder="Иван Иванов" className="rounded-none" required />
+                    <Input id="reg-name" name="name" placeholder="Иван Иванов" required />
                   </div>
                   <div>
                     <label htmlFor="reg-email" className="text-sm font-light mb-2 block text-muted-foreground">Почта (email)</label>
-                    <Input id="reg-email" name="email" type="email" placeholder="ivan@example.com" className="rounded-none" required />
+                    <Input id="reg-email" name="email" type="email" placeholder="ivan@example.com" required />
                   </div>
                   <div>
                     <label htmlFor="reg-age" className="text-sm font-light mb-2 block text-muted-foreground">Возраст</label>
-                    <Input id="reg-age" name="age" type="number" min="1" max="120" placeholder="25" className="rounded-none" required />
+                    <Input id="reg-age" name="age" type="number" min="1" max="120" placeholder="25" required />
                   </div>
                   <div>
                     <label htmlFor="reg-tickets" className="text-sm font-light mb-2 block text-muted-foreground">Количество билетов</label>
-                    <Input id="reg-tickets" name="tickets" type="number" min="1" max="10" placeholder="1" defaultValue="1" className="rounded-none" required />
+                    <Input id="reg-tickets" name="tickets" type="number" min="1" max="10" placeholder="1" defaultValue="1" required />
                   </div>
-                  <Button type="submit" className="w-full rounded-none h-12 font-light" disabled={isLoading}>
+                  <Button type="submit" className="w-full h-12 font-light" disabled={isLoading}>
                     {isLoading ? 'Отправка...' : 'Зарегистрироваться'}
                   </Button>
                 </form>
               </DialogContent>
             </Dialog>
-            <Button size="lg" variant="ghost" className="border border-white/30 text-white hover:bg-white/10 text-base font-light px-10 h-12 rounded-none" onClick={() => scrollToSection('program')}>
+            <Button size="lg" variant="ghost" className="border border-white/30 text-white hover:bg-white/10 text-base font-light px-10 h-12" onClick={() => scrollToSection('program')}>
               Программа
             </Button>
           </div>
@@ -311,9 +311,9 @@ const Index = () => {
               
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="w-full rounded-none h-14 font-light text-base">Зарегистрироваться на форум</Button>
+                  <Button className="w-full h-14 font-light text-base">Зарегистрироваться на форум</Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-md rounded-none">
+                <DialogContent className="sm:max-w-md">
                   <DialogHeader>
                     <DialogTitle className="text-2xl font-light">Регистрация на форум</DialogTitle>
                     <DialogDescription className="font-light">
@@ -323,21 +323,21 @@ const Index = () => {
                   <form onSubmit={handleRegistration} className="space-y-6 mt-4">
                     <div>
                       <label htmlFor="reg-name-2" className="text-sm font-light mb-2 block text-muted-foreground">Имя</label>
-                      <Input id="reg-name-2" name="name" placeholder="Иван Иванов" className="rounded-none" required />
+                      <Input id="reg-name-2" name="name" placeholder="Иван Иванов" required />
                     </div>
                     <div>
                       <label htmlFor="reg-email-2" className="text-sm font-light mb-2 block text-muted-foreground">Почта (email)</label>
-                      <Input id="reg-email-2" name="email" type="email" placeholder="ivan@example.com" className="rounded-none" required />
+                      <Input id="reg-email-2" name="email" type="email" placeholder="ivan@example.com" required />
                     </div>
                     <div>
                       <label htmlFor="reg-age-2" className="text-sm font-light mb-2 block text-muted-foreground">Возраст</label>
-                      <Input id="reg-age-2" name="age" type="number" min="1" max="120" placeholder="25" className="rounded-none" required />
+                      <Input id="reg-age-2" name="age" type="number" min="1" max="120" placeholder="25" required />
                     </div>
                     <div>
                       <label htmlFor="reg-tickets-2" className="text-sm font-light mb-2 block text-muted-foreground">Количество билетов</label>
-                      <Input id="reg-tickets-2" name="tickets" type="number" min="1" max="10" placeholder="1" defaultValue="1" className="rounded-none" required />
+                      <Input id="reg-tickets-2" name="tickets" type="number" min="1" max="10" placeholder="1" defaultValue="1" required />
                     </div>
-                    <Button type="submit" className="w-full rounded-none h-12 font-light" disabled={isLoading}>
+                    <Button type="submit" className="w-full h-12 font-light" disabled={isLoading}>
                       {isLoading ? 'Отправка...' : 'Зарегистрироваться'}
                     </Button>
                   </form>
@@ -383,17 +383,17 @@ const Index = () => {
               <form className="space-y-6">
                 <div>
                   <label htmlFor="name" className="text-sm font-light mb-2 block text-muted-foreground">Имя</label>
-                  <Input id="name" placeholder="Ваше имя" className="rounded-none" />
+                  <Input id="name" placeholder="Ваше имя" />
                 </div>
                 <div>
                   <label htmlFor="email" className="text-sm font-light mb-2 block text-muted-foreground">Email</label>
-                  <Input id="email" type="email" placeholder="your@email.com" className="rounded-none" />
+                  <Input id="email" type="email" placeholder="your@email.com" />
                 </div>
                 <div>
                   <label htmlFor="message" className="text-sm font-light mb-2 block text-muted-foreground">Сообщение</label>
-                  <Textarea id="message" placeholder="Ваше сообщение..." rows={4} className="rounded-none" />
+                  <Textarea id="message" placeholder="Ваше сообщение..." rows={4} />
                 </div>
-                <Button className="w-full rounded-none h-12 font-light">Отправить</Button>
+                <Button className="w-full h-12 font-light">Отправить</Button>
               </form>
             </div>
           </div>

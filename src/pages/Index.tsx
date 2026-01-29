@@ -5,12 +5,35 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import Icon from "@/components/ui/icon";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [heroContent, setHeroContent] = useState({ title: 'Образцовое образование', subtitle: 'Всероссийский форум о будущем обучения', date: '15–16 марта 2026', location: 'МВЦ «Крокус Экспо», Москва' });
+  const [aboutContent, setAboutContent] = useState({ title: 'О форуме', paragraphs: [''] });
   const { toast } = useToast();
+  
+  const ADMIN_API = 'https://functions.poehali.dev/9415fc7f-1b50-4b21-b974-8752b2e70d6e';
+  
+  useEffect(() => {
+    loadContent();
+  }, []);
+  
+  const loadContent = async () => {
+    try {
+      const response = await fetch(`${ADMIN_API}?action=content`);
+      const data = await response.json();
+      if (data.content?.hero) {
+        setHeroContent(data.content.hero);
+      }
+      if (data.content?.about) {
+        setAboutContent(data.content.about);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки контента:', error);
+    }
+  };
   
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -86,15 +109,15 @@ const Index = () => {
         
         <div className="container mx-auto px-6 relative z-10 text-center text-background">
           <h1 className="text-6xl md:text-8xl font-light mb-8 tracking-tight text-balance">
-            Образцовое образование
+            {heroContent.title}
           </h1>
           <p className="text-xl md:text-2xl mb-12 font-light">
-            Всероссийский форум о будущем обучения
+            {heroContent.subtitle}
           </p>
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-16 text-base font-light">
-            <span>15–16 марта 2026</span>
+            <span>{heroContent.date}</span>
             <span className="hidden md:block">·</span>
-            <span>МВЦ «Крокус Экспо», Москва</span>
+            <span>{heroContent.location}</span>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -140,19 +163,13 @@ const Index = () => {
 
       <section id="about" className="py-32 md:py-40">
         <div className="container mx-auto px-6">
-          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">О форуме</h2>
+          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">{aboutContent.title}</h2>
           <div className="max-w-3xl mx-auto space-y-8 text-lg font-light leading-relaxed text-foreground/80 mb-24">
-            <p>
-              «Образцовое образование» — это ключевое событие года для всех, кто создаёт будущее российского образования. 
-              Два дня интенсивного обмена опытом, новейшими методиками и технологиями, которые меняют подход к обучению.
-            </p>
-            <p>
-              Форум объединяет лучших экспертов отрасли, руководителей образовательных учреждений и EdTech-компаний, 
-              чтобы вместе найти ответы на главные вызовы современного образования.
-            </p>
-            <p className="text-foreground pt-4">
-              Для кого: педагоги, методисты, руководители образовательных организаций, представители EdTech-индустрии
-            </p>
+            {aboutContent.paragraphs.map((paragraph, idx) => (
+              <p key={idx} className={idx === aboutContent.paragraphs.length - 1 ? 'text-foreground pt-4' : ''}>
+                {paragraph}
+              </p>
+            ))}
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-16 max-w-5xl mx-auto">

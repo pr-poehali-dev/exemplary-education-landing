@@ -3,21 +3,65 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import Icon from "@/components/ui/icon";
 import { useState } from "react";
 
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
   
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
   
-  const handleRegistration = (e: React.FormEvent) => {
+  const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: отправка данных на backend
-    alert('Спасибо за регистрацию! Билет отправлен на ваш email.');
-    setIsDialogOpen(false);
+    setIsLoading(true);
+    
+    const formData = new FormData(e.target as HTMLFormElement);
+    const data = {
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      age: parseInt(formData.get('age') as string),
+      tickets: parseInt(formData.get('tickets') as string),
+    };
+    
+    try {
+      const response = await fetch('https://functions.poehali.dev/6119df71-515b-40d7-80f9-cc922a6928d3', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok) {
+        toast({
+          title: "Регистрация успешна!",
+          description: result.message || "Билет отправлен на ваш email",
+        });
+        setIsDialogOpen(false);
+        (e.target as HTMLFormElement).reset();
+      } else {
+        toast({
+          title: "Ошибка",
+          description: result.error || "Не удалось зарегистрироваться",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось отправить данные. Попробуйте позже.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -319,21 +363,23 @@ const Index = () => {
                   <form onSubmit={handleRegistration} className="space-y-6 mt-4">
                     <div>
                       <label htmlFor="reg-name" className="text-sm font-light mb-2 block text-muted-foreground">Имя</label>
-                      <Input id="reg-name" placeholder="Иван Иванов" className="rounded-none" required />
+                      <Input id="reg-name" name="name" placeholder="Иван Иванов" className="rounded-none" required />
                     </div>
                     <div>
                       <label htmlFor="reg-email" className="text-sm font-light mb-2 block text-muted-foreground">Почта (email)</label>
-                      <Input id="reg-email" type="email" placeholder="ivan@example.com" className="rounded-none" required />
+                      <Input id="reg-email" name="email" type="email" placeholder="ivan@example.com" className="rounded-none" required />
                     </div>
                     <div>
                       <label htmlFor="reg-age" className="text-sm font-light mb-2 block text-muted-foreground">Возраст</label>
-                      <Input id="reg-age" type="number" min="1" max="120" placeholder="25" className="rounded-none" required />
+                      <Input id="reg-age" name="age" type="number" min="1" max="120" placeholder="25" className="rounded-none" required />
                     </div>
                     <div>
                       <label htmlFor="reg-tickets" className="text-sm font-light mb-2 block text-muted-foreground">Количество билетов</label>
-                      <Input id="reg-tickets" type="number" min="1" max="10" placeholder="1" defaultValue="1" className="rounded-none" required />
+                      <Input id="reg-tickets" name="tickets" type="number" min="1" max="10" placeholder="1" defaultValue="1" className="rounded-none" required />
                     </div>
-                    <Button type="submit" className="w-full rounded-none h-12 font-light">Зарегистрироваться</Button>
+                    <Button type="submit" className="w-full rounded-none h-12 font-light" disabled={isLoading}>
+                      {isLoading ? 'Отправка...' : 'Зарегистрироваться'}
+                    </Button>
                   </form>
                 </DialogContent>
               </Dialog>

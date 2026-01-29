@@ -318,20 +318,20 @@ const Index = () => {
                   </DialogHeader>
                   <form onSubmit={handleRegistration} className="space-y-6 mt-4">
                     <div>
-                      <label htmlFor="reg-name" className="text-sm font-light mb-2 block text-muted-foreground">Имя и фамилия</label>
+                      <label htmlFor="reg-name" className="text-sm font-light mb-2 block text-muted-foreground">Имя</label>
                       <Input id="reg-name" placeholder="Иван Иванов" className="rounded-none" required />
                     </div>
                     <div>
-                      <label htmlFor="reg-email" className="text-sm font-light mb-2 block text-muted-foreground">Email</label>
+                      <label htmlFor="reg-email" className="text-sm font-light mb-2 block text-muted-foreground">Почта (email)</label>
                       <Input id="reg-email" type="email" placeholder="ivan@example.com" className="rounded-none" required />
                     </div>
                     <div>
-                      <label htmlFor="reg-org" className="text-sm font-light mb-2 block text-muted-foreground">Организация</label>
-                      <Input id="reg-org" placeholder="Название вашей организации" className="rounded-none" />
+                      <label htmlFor="reg-age" className="text-sm font-light mb-2 block text-muted-foreground">Возраст</label>
+                      <Input id="reg-age" type="number" min="1" max="120" placeholder="25" className="rounded-none" required />
                     </div>
                     <div>
-                      <label htmlFor="reg-position" className="text-sm font-light mb-2 block text-muted-foreground">Должность</label>
-                      <Input id="reg-position" placeholder="Ваша должность" className="rounded-none" />
+                      <label htmlFor="reg-tickets" className="text-sm font-light mb-2 block text-muted-foreground">Количество билетов</label>
+                      <Input id="reg-tickets" type="number" min="1" max="10" placeholder="1" defaultValue="1" className="rounded-none" required />
                     </div>
                     <Button type="submit" className="w-full rounded-none h-12 font-light">Зарегистрироваться</Button>
                   </form>

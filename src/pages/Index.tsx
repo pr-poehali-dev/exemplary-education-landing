@@ -2,11 +2,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Icon from "@/components/ui/icon";
+import { useState } from "react";
 
 const Index = () => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+  
+  const handleRegistration = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: отправка данных на backend
+    alert('Спасибо за регистрацию! Билет отправлен на ваш email.');
+    setIsDialogOpen(false);
   };
 
   return (
@@ -19,7 +30,7 @@ const Index = () => {
               <button onClick={() => scrollToSection('about')} className="text-sm font-light hover:text-foreground transition-colors text-muted-foreground">О форуме</button>
               <button onClick={() => scrollToSection('program')} className="text-sm font-light hover:text-foreground transition-colors text-muted-foreground">Программа</button>
               <button onClick={() => scrollToSection('speakers')} className="text-sm font-light hover:text-foreground transition-colors text-muted-foreground">Спикеры</button>
-              <button onClick={() => scrollToSection('tickets')} className="text-sm font-light hover:text-foreground transition-colors text-muted-foreground">Билеты</button>
+              <button onClick={() => scrollToSection('registration')} className="text-sm font-light hover:text-foreground transition-colors text-muted-foreground">Регистрация</button>
               <button onClick={() => scrollToSection('contacts')} className="text-sm font-light hover:text-foreground transition-colors text-muted-foreground">Контакты</button>
             </div>
           </div>
@@ -42,9 +53,40 @@ const Index = () => {
             <span>МВЦ «Крокус Экспо», Москва</span>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-foreground hover:bg-white/90 text-base font-light px-10 h-12 rounded-none" onClick={() => scrollToSection('tickets')}>
-              Купить билет
-            </Button>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="lg" className="bg-white text-foreground hover:bg-white/90 text-base font-light px-10 h-12 rounded-none">
+                  Получить билет
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md rounded-none">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-light">Регистрация на форум</DialogTitle>
+                  <DialogDescription className="font-light">
+                    Заполните форму, и мы вышлем билет на ваш email
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleRegistration} className="space-y-6 mt-4">
+                  <div>
+                    <label htmlFor="ticket-name" className="text-sm font-light mb-2 block text-muted-foreground">Имя и фамилия</label>
+                    <Input id="ticket-name" placeholder="Иван Иванов" className="rounded-none" required />
+                  </div>
+                  <div>
+                    <label htmlFor="ticket-email" className="text-sm font-light mb-2 block text-muted-foreground">Email</label>
+                    <Input id="ticket-email" type="email" placeholder="ivan@example.com" className="rounded-none" required />
+                  </div>
+                  <div>
+                    <label htmlFor="ticket-org" className="text-sm font-light mb-2 block text-muted-foreground">Организация</label>
+                    <Input id="ticket-org" placeholder="Название вашей организации" className="rounded-none" />
+                  </div>
+                  <div>
+                    <label htmlFor="ticket-position" className="text-sm font-light mb-2 block text-muted-foreground">Должность</label>
+                    <Input id="ticket-position" placeholder="Ваша должность" className="rounded-none" />
+                  </div>
+                  <Button type="submit" className="w-full rounded-none h-12 font-light">Зарегистрироваться</Button>
+                </form>
+              </DialogContent>
+            </Dialog>
             <Button size="lg" variant="ghost" className="border border-white/30 text-white hover:bg-white/10 text-base font-light px-10 h-12 rounded-none" onClick={() => scrollToSection('program')}>
               Программа
             </Button>
@@ -229,62 +271,72 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="tickets" className="py-32 md:py-40 bg-secondary/20">
+      <section id="registration" className="py-32 md:py-40 bg-secondary/20">
         <div className="container mx-auto px-6">
-          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">Выберите билет</h2>
+          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">Регистрация</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-1 max-w-6xl mx-auto">
+          <div className="max-w-2xl mx-auto">
             <div className="bg-white p-12 border border-border">
-              <div className="mb-8">
-                <h3 className="text-xl font-light mb-2">Ранняя птица</h3>
-                <p className="text-sm font-light text-muted-foreground">До 1 февраля 2026</p>
+              <div className="text-center mb-12">
+                <div className="text-6xl font-light mb-4">Бесплатно</div>
+                <p className="text-lg font-light text-muted-foreground">Участие в форуме</p>
               </div>
-              <div className="mb-8">
-                <div className="text-4xl font-light mb-1">7 900 ₽</div>
-                <div className="text-sm font-light text-muted-foreground line-through">12 900 ₽</div>
-              </div>
-              <ul className="space-y-3 mb-12">
-                <li className="text-sm font-light">Доступ ко всем секциям форума</li>
-                <li className="text-sm font-light">Материалы выступлений</li>
-                <li className="text-sm font-light">Кофе-брейки и обеды</li>
-                <li className="text-sm font-light">Сертификат участника</li>
+              
+              <ul className="space-y-4 mb-12">
+                <li className="text-base font-light flex items-start gap-3">
+                  <span className="text-foreground mt-1">—</span>
+                  <span>Доступ ко всем секциям форума</span>
+                </li>
+                <li className="text-base font-light flex items-start gap-3">
+                  <span className="text-foreground mt-1">—</span>
+                  <span>Материалы выступлений</span>
+                </li>
+                <li className="text-base font-light flex items-start gap-3">
+                  <span className="text-foreground mt-1">—</span>
+                  <span>Кофе-брейки и обеды</span>
+                </li>
+                <li className="text-base font-light flex items-start gap-3">
+                  <span className="text-foreground mt-1">—</span>
+                  <span>Сертификат участника</span>
+                </li>
+                <li className="text-base font-light flex items-start gap-3">
+                  <span className="text-foreground mt-1">—</span>
+                  <span>Нетворкинг с коллегами</span>
+                </li>
               </ul>
-              <Button className="w-full rounded-none h-12 font-light">Купить билет</Button>
-            </div>
-
-            <div className="bg-foreground text-background p-12 border border-foreground">
-              <div className="mb-8">
-                <h3 className="text-xl font-light mb-2">Стандарт</h3>
-                <p className="text-sm font-light opacity-70">Базовый пакет участия</p>
-              </div>
-              <div className="mb-8">
-                <div className="text-4xl font-light">12 900 ₽</div>
-              </div>
-              <ul className="space-y-3 mb-12">
-                <li className="text-sm font-light">Всё из пакета «Ранняя птица»</li>
-                <li className="text-sm font-light">Запись всех выступлений</li>
-                <li className="text-sm font-light">Доступ к нетворкинг-зоне</li>
-                <li className="text-sm font-light">Методические пособия</li>
-              </ul>
-              <Button className="w-full bg-white text-foreground hover:bg-white/90 rounded-none h-12 font-light">Купить билет</Button>
-            </div>
-
-            <div className="bg-white p-12 border border-border">
-              <div className="mb-8">
-                <h3 className="text-xl font-light mb-2">VIP</h3>
-                <p className="text-sm font-light text-muted-foreground">Максимум возможностей</p>
-              </div>
-              <div className="mb-8">
-                <div className="text-4xl font-light">24 900 ₽</div>
-              </div>
-              <ul className="space-y-3 mb-12">
-                <li className="text-sm font-light">Всё из пакета «Стандарт»</li>
-                <li className="text-sm font-light">Личная встреча со спикерами</li>
-                <li className="text-sm font-light">VIP-лаунж с закрытыми дискуссиями</li>
-                <li className="text-sm font-light">Индивидуальная консультация</li>
-                <li className="text-sm font-light">Приоритетные места в зале</li>
-              </ul>
-              <Button className="w-full rounded-none h-12 font-light">Купить билет</Button>
+              
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full rounded-none h-14 font-light text-base">Зарегистрироваться на форум</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md rounded-none">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-light">Регистрация на форум</DialogTitle>
+                    <DialogDescription className="font-light">
+                      Заполните форму, и мы вышлем билет на ваш email
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleRegistration} className="space-y-6 mt-4">
+                    <div>
+                      <label htmlFor="reg-name" className="text-sm font-light mb-2 block text-muted-foreground">Имя и фамилия</label>
+                      <Input id="reg-name" placeholder="Иван Иванов" className="rounded-none" required />
+                    </div>
+                    <div>
+                      <label htmlFor="reg-email" className="text-sm font-light mb-2 block text-muted-foreground">Email</label>
+                      <Input id="reg-email" type="email" placeholder="ivan@example.com" className="rounded-none" required />
+                    </div>
+                    <div>
+                      <label htmlFor="reg-org" className="text-sm font-light mb-2 block text-muted-foreground">Организация</label>
+                      <Input id="reg-org" placeholder="Название вашей организации" className="rounded-none" />
+                    </div>
+                    <div>
+                      <label htmlFor="reg-position" className="text-sm font-light mb-2 block text-muted-foreground">Должность</label>
+                      <Input id="reg-position" placeholder="Ваша должность" className="rounded-none" />
+                    </div>
+                    <Button type="submit" className="w-full rounded-none h-12 font-light">Зарегистрироваться</Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>

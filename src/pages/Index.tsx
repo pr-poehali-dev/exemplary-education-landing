@@ -147,33 +147,34 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <nav className="fixed top-0 w-full bg-white z-50 border-b border-border/50">
-        <div className="container mx-auto px-6 py-6">
+    <div className="min-h-screen bg-background">
+      <nav className="fixed top-0 w-full bg-background/80 backdrop-blur-xl z-50 border-b border-border/50">
+        <div className="container mx-auto px-6 py-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-medium text-foreground">{heroContent.title}</h2>
+            <h2 className="text-base font-semibold text-foreground">{heroContent.title}</h2>
             <div className="hidden md:flex gap-8">
-              <button onClick={() => scrollToSection('about')} className="text-sm font-light hover:text-foreground transition-colors text-muted-foreground">О форуме</button>
-              <button onClick={() => scrollToSection('program')} className="text-sm font-light hover:text-foreground transition-colors text-muted-foreground">Программа</button>
-              <button onClick={() => scrollToSection('speakers')} className="text-sm font-light hover:text-foreground transition-colors text-muted-foreground">Спикеры</button>
-              <button onClick={() => scrollToSection('registration')} className="text-sm font-light hover:text-foreground transition-colors text-muted-foreground">Регистрация</button>
-              <button onClick={() => scrollToSection('contacts')} className="text-sm font-light hover:text-foreground transition-colors text-muted-foreground">Контакты</button>
+              <button onClick={() => scrollToSection('about')} className="text-sm font-medium hover:text-primary transition-colors text-muted-foreground">О форуме</button>
+              <button onClick={() => scrollToSection('program')} className="text-sm font-medium hover:text-primary transition-colors text-muted-foreground">Программа</button>
+              <button onClick={() => scrollToSection('speakers')} className="text-sm font-medium hover:text-primary transition-colors text-muted-foreground">Спикеры</button>
+              <button onClick={() => scrollToSection('registration')} className="text-sm font-medium hover:text-primary transition-colors text-muted-foreground">Регистрация</button>
+              <button onClick={() => scrollToSection('contacts')} className="text-sm font-medium hover:text-primary transition-colors text-muted-foreground">Контакты</button>
             </div>
           </div>
         </div>
       </nav>
 
       <section className="relative min-h-screen flex items-center justify-center pt-20">
-        <div className="absolute inset-0 bg-foreground"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-foreground via-foreground to-foreground/90"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,119,0,0.1),transparent_50%),radial-gradient(circle_at_70%_50%,rgba(255,119,0,0.08),transparent_50%)]"></div>
         
         <div className="container mx-auto px-6 relative z-10 text-center text-background">
-          <h1 className="text-6xl md:text-8xl font-light mb-8 tracking-tight text-balance">
+          <h1 className="text-6xl md:text-8xl font-bold mb-8 tracking-tight text-balance">
             {heroContent.title}
           </h1>
-          <p className="text-xl md:text-2xl mb-12 font-light">
+          <p className="text-xl md:text-2xl mb-12 font-normal text-background/90">
             {heroContent.subtitle}
           </p>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-16 text-base font-light">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-16 text-base font-medium">
             <span>{heroContent.date}</span>
             <span className="hidden md:block">·</span>
             <span>{heroContent.location}</span>
@@ -181,7 +182,7 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="lg" className="bg-white text-foreground hover:bg-white/90 text-base font-light px-10 h-12">
+                <Button size="lg" className="bg-white text-foreground hover:bg-white/90 text-base font-semibold px-12 h-14 shadow-2xl shadow-black/20">
                   Получить билет
                 </Button>
               </DialogTrigger>
@@ -215,7 +216,7 @@ const Index = () => {
                 </form>
               </DialogContent>
             </Dialog>
-            <Button size="lg" variant="ghost" className="border border-white/30 text-white hover:bg-white/10 text-base font-light px-10 h-12" onClick={() => scrollToSection('program')}>
+            <Button size="lg" variant="ghost" className="border-2 border-white/40 text-white hover:bg-white/10 hover:border-white/60 text-base font-semibold px-12 h-14 transition-all" onClick={() => scrollToSection('program')}>
               Программа
             </Button>
           </div>
@@ -224,8 +225,8 @@ const Index = () => {
 
       <section id="about" className="py-32 md:py-40">
         <div className="container mx-auto px-6">
-          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">{aboutContent.title}</h2>
-          <div className="max-w-3xl mx-auto space-y-8 text-lg font-light leading-relaxed text-foreground/80 mb-24">
+          <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-center mb-20 text-primary">{aboutContent.title}</h2>
+          <div className="max-w-3xl mx-auto space-y-6 text-xl font-normal leading-relaxed text-foreground/90 mb-24">
             {aboutContent.paragraphs.map((paragraph, idx) => (
               <p key={idx} className={idx === aboutContent.paragraphs.length - 1 ? 'text-foreground pt-4' : ''}>
                 {paragraph}
@@ -233,34 +234,34 @@ const Index = () => {
             ))}
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-16 max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 max-w-6xl mx-auto">
             {statsContent.map((stat, idx) => (
-              <div key={idx} className="text-center">
-                <h3 className="text-5xl font-light mb-3 text-foreground">{stat.value}</h3>
-                <p className="text-sm font-light text-muted-foreground">{stat.label}</p>
+              <div key={idx} className="text-center p-6 rounded-2xl bg-card border border-border/50 hover:border-primary/30 transition-all hover:shadow-lg">
+                <h3 className="text-5xl md:text-6xl font-bold mb-3 text-primary">{stat.value}</h3>
+                <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="program" className="py-32 md:py-40 bg-secondary/20">
+      <section id="program" className="py-32 md:py-40 bg-gradient-to-b from-background to-secondary/30">
         <div className="container mx-auto px-6">
-          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">{programContent.title}</h2>
+          <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-center mb-20 text-primary">{programContent.title}</h2>
           
-          <div className="max-w-4xl mx-auto space-y-12">
+          <div className="max-w-4xl mx-auto space-y-6">
             {programContent.items.map((item, idx) => (
-              <div key={idx} className="border-t border-border pt-8">
+              <div key={idx} className="bg-card p-8 rounded-2xl border border-border/50 hover:border-primary/30 transition-all hover:shadow-lg">
                 <div className="flex flex-col md:flex-row md:items-start gap-6">
                   <div className="md:w-24 flex-shrink-0">
-                    <span className="text-sm font-light text-muted-foreground">{item.time}</span>
+                    <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-lg">{item.time}</span>
                   </div>
                   <div className="flex-grow">
-                    <h3 className="text-xl font-light mb-3">{item.title}</h3>
-                    <p className="text-muted-foreground font-light mb-4 leading-relaxed">
+                    <h3 className="text-2xl font-bold mb-3 text-foreground">{item.title}</h3>
+                    <p className="text-muted-foreground font-normal mb-4 leading-relaxed text-base">
                       {item.description}
                     </p>
-                    <p className="text-sm font-light text-foreground">{item.speaker}</p>
+                    <p className="text-sm font-semibold text-foreground">{item.speaker}</p>
                   </div>
                 </div>
               </div>
@@ -271,16 +272,16 @@ const Index = () => {
 
       <section id="speakers" className="py-32 md:py-40">
         <div className="container mx-auto px-6">
-          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">{speakersContent.title}</h2>
+          <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-center mb-20 text-primary">{speakersContent.title}</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {speakersContent.items.map((speaker, idx) => (
-              <div key={idx} className="border-t border-border pt-6">
+              <div key={idx} className="bg-card p-8 rounded-2xl border border-border/50 hover:border-primary/30 transition-all hover:shadow-lg">
                 <div className="mb-6">
-                  <h3 className="text-xl font-light mb-1">{speaker.name}</h3>
-                  <p className="text-sm font-light text-muted-foreground">{speaker.position}</p>
+                  <h3 className="text-xl font-bold mb-2 text-foreground">{speaker.name}</h3>
+                  <p className="text-sm font-medium text-primary">{speaker.position}</p>
                 </div>
-                <p className="text-sm font-light leading-relaxed text-muted-foreground">
+                <p className="text-sm font-normal leading-relaxed text-muted-foreground">
                   {speaker.bio}
                 </p>
               </div>
@@ -289,21 +290,21 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="registration" className="py-32 md:py-40 bg-secondary/20">
+      <section id="registration" className="py-32 md:py-40 bg-gradient-to-b from-secondary/30 to-background">
         <div className="container mx-auto px-6">
-          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">{registrationContent.title}</h2>
+          <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-center mb-20 text-primary">{registrationContent.title}</h2>
           
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white p-12 border border-border">
+            <div className="bg-card p-12 rounded-3xl border-2 border-primary/20 shadow-2xl">
               <div className="text-center mb-12">
-                <div className="text-6xl font-light mb-4">{registrationContent.price}</div>
-                <p className="text-lg font-light text-muted-foreground">{registrationContent.subtitle}</p>
+                <div className="text-7xl font-bold mb-4 text-primary">{registrationContent.price}</div>
+                <p className="text-lg font-medium text-muted-foreground">{registrationContent.subtitle}</p>
               </div>
               
               <ul className="space-y-4 mb-12">
                 {registrationContent.benefits.map((benefit, idx) => (
-                  <li key={idx} className="text-base font-light flex items-start gap-3">
-                    <span className="text-foreground mt-1">—</span>
+                  <li key={idx} className="text-base font-normal flex items-start gap-3">
+                    <span className="text-primary mt-1 font-bold">✓</span>
                     <span>{benefit}</span>
                   </li>
                 ))}
@@ -311,7 +312,7 @@ const Index = () => {
               
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="w-full h-14 font-light text-base">Зарегистрироваться на форум</Button>
+                  <Button className="w-full h-16 font-semibold text-lg shadow-lg hover:shadow-xl transition-all">Зарегистрироваться на форум</Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-md">
                   <DialogHeader>
@@ -350,59 +351,59 @@ const Index = () => {
 
       <section id="contacts" className="py-32 md:py-40">
         <div className="container mx-auto px-6">
-          <h2 className="text-sm font-light uppercase tracking-widest text-center mb-20 text-muted-foreground">{contactsContent.title}</h2>
+          <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-center mb-20 text-primary">{contactsContent.title}</h2>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-4xl mx-auto">
-            <div className="space-y-8">
-              <div className="border-t border-border pt-6">
-                <p className="text-sm font-light text-muted-foreground mb-2">Email</p>
-                <a href={`mailto:${contactsContent.email}`} className="text-lg font-light hover:opacity-70 transition-opacity">{contactsContent.email}</a>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div className="space-y-6">
+              <div className="bg-card p-6 rounded-2xl border border-border/50">
+                <p className="text-xs font-bold text-primary mb-2 uppercase tracking-wider">Email</p>
+                <a href={`mailto:${contactsContent.email}`} className="text-lg font-semibold hover:text-primary transition-colors">{contactsContent.email}</a>
               </div>
 
-              <div className="border-t border-border pt-6">
-                <p className="text-sm font-light text-muted-foreground mb-2">Телефон</p>
-                <a href={`tel:${contactsContent.phone}`} className="text-lg font-light hover:opacity-70 transition-opacity">{contactsContent.phone}</a>
+              <div className="bg-card p-6 rounded-2xl border border-border/50">
+                <p className="text-xs font-bold text-primary mb-2 uppercase tracking-wider">Телефон</p>
+                <a href={`tel:${contactsContent.phone}`} className="text-lg font-semibold hover:text-primary transition-colors">{contactsContent.phone}</a>
               </div>
 
-              <div className="border-t border-border pt-6">
-                <p className="text-sm font-light text-muted-foreground mb-2">Адрес</p>
-                <p className="text-lg font-light">{contactsContent.address}</p>
+              <div className="bg-card p-6 rounded-2xl border border-border/50">
+                <p className="text-xs font-bold text-primary mb-2 uppercase tracking-wider">Адрес</p>
+                <p className="text-lg font-semibold">{contactsContent.address}</p>
               </div>
 
-              <div className="border-t border-border pt-6">
-                <p className="text-sm font-light text-muted-foreground mb-4">Мы в соцсетях</p>
+              <div className="bg-card p-6 rounded-2xl border border-border/50">
+                <p className="text-xs font-bold text-primary mb-4 uppercase tracking-wider">Мы в соцсетях</p>
                 <div className="flex gap-4">
-                  <a href={contactsContent.social.vk} className="text-sm font-light hover:opacity-70 transition-opacity">ВКонтакте</a>
-                  <a href={contactsContent.social.telegram} className="text-sm font-light hover:opacity-70 transition-opacity">Telegram</a>
+                  <a href={contactsContent.social.vk} className="text-sm font-semibold hover:text-primary transition-colors">ВКонтакте</a>
+                  <a href={contactsContent.social.telegram} className="text-sm font-semibold hover:text-primary transition-colors">Telegram</a>
                 </div>
               </div>
             </div>
 
-            <div className="border border-border p-8">
-              <h3 className="text-lg font-light mb-6">Форма обратной связи</h3>
+            <div className="bg-card border-2 border-border/50 p-8 rounded-2xl">
+              <h3 className="text-xl font-bold mb-6">Форма обратной связи</h3>
               <form className="space-y-6">
                 <div>
-                  <label htmlFor="name" className="text-sm font-light mb-2 block text-muted-foreground">Имя</label>
-                  <Input id="name" placeholder="Ваше имя" />
+                  <label htmlFor="name" className="text-sm font-medium mb-2 block text-foreground">Имя</label>
+                  <Input id="name" placeholder="Ваше имя" className="h-12" />
                 </div>
                 <div>
-                  <label htmlFor="email" className="text-sm font-light mb-2 block text-muted-foreground">Email</label>
-                  <Input id="email" type="email" placeholder="your@email.com" />
+                  <label htmlFor="email" className="text-sm font-medium mb-2 block text-foreground">Email</label>
+                  <Input id="email" type="email" placeholder="your@email.com" className="h-12" />
                 </div>
                 <div>
-                  <label htmlFor="message" className="text-sm font-light mb-2 block text-muted-foreground">Сообщение</label>
+                  <label htmlFor="message" className="text-sm font-medium mb-2 block text-foreground">Сообщение</label>
                   <Textarea id="message" placeholder="Ваше сообщение..." rows={4} />
                 </div>
-                <Button className="w-full h-12 font-light">Отправить</Button>
+                <Button className="w-full h-12 font-semibold">Отправить</Button>
               </form>
             </div>
           </div>
         </div>
       </section>
 
-      <footer className="bg-foreground text-background py-12">
+      <footer className="bg-gradient-to-br from-foreground to-foreground/90 text-background py-16">
         <div className="container mx-auto px-6 text-center">
-          <p className="text-sm font-light">© 2026 {heroContent.title}. Всероссийский форум о будущем обучения.</p>
+          <p className="text-sm font-medium">© 2026 {heroContent.title}. Всероссийский форум о будущем обучения.</p>
         </div>
       </footer>
     </div>

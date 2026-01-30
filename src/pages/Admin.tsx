@@ -60,6 +60,8 @@ const Admin = () => {
     try {
       const response = await fetch(`${ADMIN_API}?action=content`);
       const data = await response.json();
+      console.log('Загруженный контент в админке:', data.content);
+      console.log('Разделы:', Object.keys(data.content || {}));
       setContent(data.content || {});
     } catch (error) {
       toast({

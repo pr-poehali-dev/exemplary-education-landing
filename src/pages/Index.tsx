@@ -83,11 +83,15 @@ const Index = () => {
       const response = await fetch(`${ADMIN_API}?action=content`);
       const data = await response.json();
       console.log('Загруженные данные:', data);
+      console.log('Спикеры из API:', data.content?.speakers);
       if (data.content?.hero) setHeroContent(data.content.hero);
       if (data.content?.about) setAboutContent(data.content.about);
       if (data.content?.stats?.items) setStatsContent(data.content.stats.items);
       if (data.content?.program) setProgramContent(data.content.program);
-      if (data.content?.speakers) setSpeakersContent(data.content.speakers);
+      if (data.content?.speakers) {
+        console.log('Устанавливаю спикеров:', data.content.speakers);
+        setSpeakersContent(data.content.speakers);
+      }
       if (data.content?.registration) setRegistrationContent(data.content.registration);
       if (data.content?.contacts) setContactsContent(data.content.contacts);
     } catch (error) {

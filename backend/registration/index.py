@@ -63,19 +63,23 @@ def handler(event: dict, context) -> dict:
         cur.close()
         conn.close()
         
-        smtp_host = os.environ.get('SMTP_HOST')
+        smtp_host = os.environ.get('SMTP_HOST', '').strip()
         smtp_port = int(os.environ.get('SMTP_PORT', 587))
-        smtp_user = os.environ.get('SMTP_USER')
-        smtp_password = os.environ.get('SMTP_PASSWORD')
+        smtp_user = os.environ.get('SMTP_USER', '').strip()
+        smtp_password = os.environ.get('SMTP_PASSWORD', '').strip()
         
-        if not all([smtp_host, smtp_user, smtp_password]):
+        if not smtp_host or not smtp_user or not smtp_password:
             return {
-                'statusCode': 500,
+                'statusCode': 200,
                 'headers': {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'error': 'SMTP не настроен. Обратитесь к администратору.'})
+                'body': json.dumps({
+                    'success': True,
+                    'message': 'Регистрация принята! (Email не настроен, письмо не отправлено)',
+                    'warning': 'SMTP не настроен'
+                })
             }
         
         msg = MIMEMultipart('alternative')
@@ -152,10 +156,24 @@ def handler(event: dict, context) -> dict:
         
         msg.attach(MIMEText(html_body, 'html', 'utf-8'))
         
-        with smtplib.SMTP(smtp_host, smtp_port) as server:
-            server.starttls()
-            server.login(smtp_user, smtp_password)
-            server.send_message(msg)
+        try:
+            with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as server:
+                server.starttls()
+                server.login(smtp_user, smtp_password)
+                server.send_message(msg)
+        except (smtplib.SMTPException, OSError) as email_error:
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'success': True,
+                    'message': 'Регистрация принята! (Ошибка отправки email)',
+                    'warning': f'Email ошибка: {str(email_error)}'
+                })
+            }
         
         return {
             'statusCode': 200,
@@ -178,6 +196,15 @@ def handler(event: dict, context) -> dict:
             },
             'body': json.dumps({'error': 'Неверный формат данных'})
         }
+    except psycopg2.Error as db_error:
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': f'Ошибка базы данных: {str(db_error)}'})
+        }
     except Exception as e:
         return {
             'statusCode': 500,
@@ -185,5 +212,5 @@ def handler(event: dict, context) -> dict:
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            'body': json.dumps({'error': f'Ошибка отправки: {str(e)}'})
+            'body': json.dumps({'error': f'Ошибка сервера: {str(e)}'})
         }
